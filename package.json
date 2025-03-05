@@ -1,0 +1,29 @@
+{
+  "name": "tour-guide",
+  "version": "1.0.0",
+  "description": "\"# tour-guide\"",
+  "main": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.24.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.8.2"
+  }
+}
