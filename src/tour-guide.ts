@@ -2,7 +2,7 @@ import { TourNode } from "./model";
 const _tourConfigKey = "tour-guide";
 
 export class TourGuide {
-    private modalHtml = `
+    private modalHtml = /*html*/`
         <style>
             .target-containerX { 
                 position: fixed; 
@@ -107,6 +107,8 @@ export class TourGuide {
         if (TourGuide.instance) return TourGuide.instance;
 
         TourGuide.instance = this;
+        
+        this.listenToResize();
         this.createUI();
     }
 
@@ -118,6 +120,14 @@ export class TourGuide {
         let i = new TourGuide();
         i.markedAsReadData = {};
         localStorage.removeItem(_tourConfigKey);
+    }
+
+    private listenToResize(){
+        window.addEventListener("resize", ()=>{
+            if(this.node?.selector && document.querySelector(this.node.selector)){
+                this.setPosition(document.querySelector(this.node.selector) as HTMLElement)
+            }
+        })
     }
 
 
@@ -248,7 +258,7 @@ export class TourGuide {
         const centerY = (rect.top + rect.height / 2) - tourContainerHeight / 2;
 
         const positions = {
-            top: { left: `${Math.max(centerX, 0)}px`, bottom: `${rect.top - tourContainerHeight - 20}px`, top: '', right: '' },
+            top: { left: `${Math.max(centerX, 0)}px`, top: `${rect.top - tourContainerHeight - 20}px`, bottom: '', right: '' },
             bottom: { left: `${Math.max(centerX, 0)}px`, top: `${rect.top + rect.height + 20}px`, right: '', bottom: '' },
             right: { left: `${rect.left + rect.width + 20}px`, top: `${Math.max(centerY, 0)}px`, right: '', bottom: '' },
             left: { right: `${window.innerWidth - rect.left + 10}px`, top: `${Math.max(centerY, 0)}px`, left: '', bottom: '' },
