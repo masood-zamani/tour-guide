@@ -1,4 +1,5 @@
 import { TourNode } from "./model";
+import { Tools } from "./tools";
 const _tourConfigKey = "tour-guide";
 
 export class TourGuide {
@@ -227,51 +228,19 @@ export class TourGuide {
         localStorage.setItem(_tourConfigKey, JSON.stringify(this.markedAsReadData));
     }
 
-    private setPosition(target: HTMLElement) {
+    private async setPosition(target: HTMLElement) {
         let rect = target?.getBoundingClientRect();
-
-        let modalPosition = this.getModalPosition(rect);
-        Object.assign(this.modalRef.style, modalPosition);
-
+        
         let targetPosition = this.getTargetPosition(rect);
         Object.assign(this.targetTour.style, targetPosition);
+
+        let modalPosition = await this.getModalPosition(rect);
+        Object.assign(this.modalRef.style, modalPosition);
     }
 
-    private getModalPosition(rect: DOMRect | null) {
-        if(!rect){
-            return  {
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)'
-            };
-        }
-
-        setTimeout(() => {
-            this.adjustTourContainerPosition();
-        }, 200);
-
-        let modalRect = this.modalRef.getBoundingClientRect();
-
-        const tourContainerWidth = modalRect.width;
-        const tourContainerHeight = modalRect.height;
-        const centerX = (rect.left + rect.width / 2) - tourContainerWidth / 2;
-        const centerY = (rect.top + rect.height / 2) - tourContainerHeight / 2;
-
-        const positions = {
-            top: { left: `${Math.max(centerX, 0)}px`, top: `${rect.top - tourContainerHeight - 20}px`, bottom: '', right: '' },
-            bottom: { left: `${Math.max(centerX, 0)}px`, top: `${rect.top + rect.height + 20}px`, right: '', bottom: '' },
-            right: { left: `${rect.left + rect.width + 20}px`, top: `${Math.max(centerY, 0)}px`, right: '', bottom: '' },
-            left: { right: `${window.innerWidth - rect.left + 10}px`, top: `${Math.max(centerY, 0)}px`, left: '', bottom: '' },
-            default: { left: `${rect.left}px`, top: `${rect.top + rect.height + 20}px`, right: '', bottom: '' }
-        };
-
-        let pos =  positions[this.node!.position] || positions.default;
-
-        return {
-            ...pos, 
-            transform:'' //reset 
-        }
-    }
+   private getModalPosition(rect:DOMRect | null){
+        return Tools.getModalPosition(this.modalRef, rect, this.node?.position || "top")
+   }
 
     private getTargetPosition(rect: DOMRect | null) {
         if (!rect) {
@@ -293,21 +262,7 @@ export class TourGuide {
         };
     }
 
-    private adjustTourContainerPosition() {
-        const tourContainer = this.modalRef;
-        if (!tourContainer) return;
 
-        const tourContainerRect = tourContainer.getBoundingClientRect();
-        if (tourContainerRect.left < 0) {
-            tourContainer.style.left = '0px';
-        } else if (tourContainerRect.right > window.innerWidth) {
-            tourContainer.style.left = `${window.innerWidth - tourContainerRect.width}px`;
-        } else if (tourContainerRect.top < 0) {
-            tourContainer.style.top = '0px';
-        } else if (tourContainerRect.bottom > window.innerHeight) {
-            tourContainer.style.top = `${window.innerHeight - tourContainerRect.height}px`;
-        }
-    }
 
     private skipTour(){
         this.steps?.forEach(node => this.markedAsReadData[node.selector] = true)
